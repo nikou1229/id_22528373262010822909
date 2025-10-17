@@ -28,10 +28,14 @@ form {
 
 label {
   font-weight: bold;
-  display: block;
+  display: inline-block; /* 背景を文字幅に合わせる */
   margin-bottom: 0.3rem;
-  color: rgba(0, 0, 0, 0.0); /* ← 半透明の黒文字（0.8 = 80%の不透明度） */
+  color: #000; /* 文字色は黒 */
+  background-color: rgba(255, 255, 255, 0.6); /* 背景を半透明に */
+  padding: 2px 6px; /* 文字と背景の余白 */
+  border-radius: 4px; /* optional */
 }
+
 
 textarea, select, input[type="text"] {
   width: 100%;
