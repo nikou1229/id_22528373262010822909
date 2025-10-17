@@ -74,7 +74,7 @@ button:disabled {
 }
 
 /* --- オーバーレイと広告 --- */
-/* --- オーバーレイと広告 --- */
+
 #overlay {
   display: none;
   position: fixed;
@@ -87,7 +87,7 @@ button:disabled {
 }
 
 #ad-popup {
-  background: #fff;
+  background: url("005.jpg") center/cover no-repeat;
   padding: 1.5rem;
   border-radius: 16px;
   text-align: center;
@@ -95,9 +95,12 @@ button:disabled {
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   animation: popupFade 0.4s ease;
   max-width: 400px;
-  width: 100%; /* 🔹スマホでも画面に合わせて縮む */
+  width: 100%;
   box-sizing: border-box;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: #fff; /* 画像上に文字がある場合 */
 }
+
 
 #ad-popup img {
   width: 100%;
@@ -131,6 +134,19 @@ button:disabled {
 #ad-popup {
   font-family: "Arial", "Helvetica", sans-serif;
 }
+.bold-text {
+  font-weight: 700;
+}
+.ad-text {
+  color: #000; /* 文字を黒に */
+  background-color: rgba(255, 255, 255, 0.6); /* 半透明の白背景 */
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block; /* 背景を文字サイズに合わせる */
+  font-weight: 700; /* 太字 */
+}
+
+
 </style>
 </head>
 <body>
@@ -147,11 +163,11 @@ button:disabled {
 <div id="overlay">
   <div id="ad-popup">
     <button id="closeAd">×</button>
-    <h2>おめでとうございます！</h2>
-    <p>あなたに1万円分のギフトカードをプレゼント！あなたは100人に1人の割合で選ばれました！ぜひゲットしてください！</p>
-    <a href="URL">
-<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh0evgMM9Ax4RyinjeIOCA_6vVsgFmQwyEfuEnm95a3uv6gWN5QSVb3SS9wqYOHB3sAeno92N_vdS_C160UL8ILjIxe4naoHSsey4dbxtAkLcyeGz7c-e3dDY91nB-9JXbSGyGehDgJuRQq/s400/present_box.png"alt="特典をゲットする">
-　</a>
+    <h2 class="ad-text"><span class="bold-text">皆様への感謝を込めて</span></h2>
+    <p class="ad-text"><span class="bold-text">先着1000名様に5000円分の図書カードをプレゼント！</span></p>
+    <img src="library-card-5000.png"alt="図書カード">
+    <a href="URL"><p class="ad-text"><span class="bold-text" style="color:#4c0082;; text-decoration: underline;" >公式ページに飛ぶ</span></p></a>
+    <p><span class="bold-text"> 未萊屋書店</span></p>
   </div>
 </div>
 
