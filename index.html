@@ -74,6 +74,7 @@ button:disabled {
 }
 
 /* --- オーバーレイと広告 --- */
+/* --- オーバーレイと広告 --- */
 #overlay {
   display: none;
   position: fixed;
@@ -82,17 +83,28 @@ button:disabled {
   justify-content: center;
   align-items: center;
   z-index: 20000;
+  padding: 1rem; /* スマホで左右に余白を確保 */
 }
+
 #ad-popup {
   background: #fff;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 16px;
   text-align: center;
   position: relative;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   animation: popupFade 0.4s ease;
   max-width: 400px;
+  width: 100%; /* 🔹スマホでも画面に合わせて縮む */
+  box-sizing: border-box;
 }
+
+#ad-popup img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
 #ad-popup h2 {
   margin-top: 0;
 }
