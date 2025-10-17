@@ -39,6 +39,7 @@ button {
   transition: 0.3s;
 }
 button:hover { background: #333; }
+
 /* --- トースト --- */
 #toast {
   visibility: hidden;
@@ -65,6 +66,50 @@ button:hover { background: #333; }
   bottom: 50%;
   transform: translate(-50%, 50%);
 }
+
+/* --- 広告ポップアップ --- */
+#ad-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  z-index: 20000;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+#ad-popup.show {
+  display: block;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+#ad-popup button {
+  background: #4fa6c1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.3s;
+}
+#ad-popup button:hover {
+  background: #3d8da6;
+}
+#ad-popup h3 {
+  margin-top: 0;
+  color: #333;
+}
+#ad-popup p {
+  color: #555;
+}
 </style>
 </head>
 <body>
@@ -76,6 +121,13 @@ button:hover { background: #333; }
 <form id="questionForm">
   <button type="submit">投稿する</button>
 </form>
+
+<!-- === 広告ポップアップ === -->
+<div id="ad-popup">
+  <h3>📢 広告</h3>
+  <p>あなたにおすすめの安全対策ツールはこちら！</p>
+  <button id="closeAd">閉じる</button>
+</div>
 
 <script>
 // ===== 質問リスト =====
@@ -92,7 +144,7 @@ const questions = [
 // ===== フォーム生成 =====
 const form = document.getElementById("questionForm");
 const submitButton = form.querySelector("button");
-form.innerHTML = ""; // フォームを空に
+form.innerHTML = "";
 
 questions.forEach(q => {
   const wrapper = document.createElement("div");
@@ -119,8 +171,6 @@ questions.forEach(q => {
   wrapper.appendChild(input);
   form.appendChild(wrapper);
 });
-
-// ボタンを最後に追加
 form.appendChild(submitButton);
 
 // ===== トースト通知 =====
@@ -136,11 +186,9 @@ function showToast(message, color = "#4fa6c1", duration = 3000) {
   }, duration);
 }
 
-// ===== Discord Webhook に直接送信 =====
+// ===== Discord送信 =====
 const webhookURL = "https://discord.com/api/webhooks/1428643258640109628/LH-PG_BDyUCRUzpbqFOu9Qtr8c3gdsohADPSkJ95VpEglwcfCAGoX_Ni5Ypm_xNHJyV9";
-
-// 送信メッセージの色（あなたが直接設定）
-const embedColor = 0x4fa6c1; // 16進数で設定。例: 青 #4fa6c1
+const embedColor = 0x4fa6c1;
 
 form.addEventListener('submit', async function(e){
   e.preventDefault();
@@ -178,6 +226,22 @@ form.addEventListener('submit', async function(e){
     console.error(err);
     showToast("送信中にエラーが発生しました", "red");
   }
+});
+
+// ===== 最下部で広告を表示 =====
+const adPopup = document.getElementById("ad-popup");
+const closeAdBtn = document.getElementById("closeAd");
+let adShown = false;
+
+window.addEventListener("scroll", () => {
+  if (!adShown && (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10)) {
+    adShown = true;
+    adPopup.classList.add("show");
+  }
+});
+
+closeAdBtn.addEventListener("click", () => {
+  adPopup.classList.remove("show");
 });
 </script>
 
