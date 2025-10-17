@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>詐欺に関するフォーム</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@font-face {
+  font-family: 'Tsunagi-gothic';
+  src: url('TsunagiGothic-Black.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Tsunagi-gothic', sans-serif;
+  padding: 2rem;
+  background: #fff;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+label { font-weight: bold; display: block; margin-bottom: 0.3rem; }
+textarea, select, input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+button {
+  padding: 0.7rem;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.3s;
+}
+button:hover { background: #333; }
+
+/* --- トースト --- */
+#toast {
+  visibility: hidden;
+  min-width: 260px;
+  max-width: 90%;
+  background: #4fa6c1;
+  color: #fff;
+  text-align: center;
+  border-radius: 12px;
+  padding: 12px 18px;
+  position: fixed;
+  left: 50%;
+  bottom: -100px;
+  transform: translateX(-50%);
+  z-index: 10001;
+  opacity: 0;
+  transition: opacity 0.4s, bottom 0.4s;
+  box-shadow: 0 10px 30px rgba(8,30,60,0.12);
+  font-weight: 700;
+}
+#toast.show {
+  visibility: visible;
+  opacity: 1;
+  bottom: 50%;
+  transform: translate(-50%, 50%);
+}
+</style>
+</head>
+<body>
+
+<h2>詐欺に関するフォーム</h2>
+
+<div id="toast"></div>
+
+<form id="questionForm">
+  <button type="submit">投稿する</button>
+</form>
+
+<script>
+// ===== 質問リスト =====
+const questions = [
+  { id: "name", label: "あなたのお名前", type: "text" },
+  { id: "email", label: "メールアドレス", type: "text" },
+  { id: "age", label: "年齢", type: "select", options: ["10代", "20代", "30代", "40代", "50代", "60代以上"] },
+  { id: "q1", label: "最近見た詐欺広告について教えてください", type: "text" },
+  { id: "q2", label: "どこでその広告を見ましたか？", type: "select", options: ["SNS", "検索サイト", "メール", "動画サイト", "その他"] },
+  { id: "q3", label: "その広告をクリックしましたか？", type: "select", options: ["はい", "いいえ"] },
+  { id: "q4", label: "被害や感想があれば自由に書いてください", type: "text" }
+];
+
+// ===== フォーム生成 =====
+const form = document.getElementById("questionForm");
+
+// 投稿ボタンを先に取り除いて一旦保存
+const submitButton = form.querySelector("button");
+form.innerHTML = ""; // フォームを空に
+
+questions.forEach(q => {
+  const wrapper = document.createElement("div");
+  const label = document.createElement("label");
+  label.textContent = q.label;
+  label.htmlFor = q.id;
+  wrapper.appendChild(label);
+
+  let input;
+  if (q.type === "select") {
+    input = document.createElement("select");
+    q.options.forEach(opt => {
+      const o = document.createElement("option");
+      o.value = opt;
+      o.textContent = opt;
+      input.appendChild(o);
+    });
+  } else {
+    input = document.createElement("textarea");
+    input.rows = 3;
+    input.placeholder = "回答を入力してください";
+  }
+  input.id = q.id;
+  wrapper.appendChild(input);
+  form.appendChild(wrapper);
+});
+
+// ボタンを最後に追加
+form.appendChild(submitButton);
+
+// ===== トースト通知 =====
+const toast = document.getElementById("toast");
+let _toastTimer = null;
+function showToast(message, color = "#4fa6c1", duration = 3000) {
+  if (_toastTimer) clearTimeout(_toastTimer);
+  toast.textContent = message;
+  toast.style.background = color;
+  toast.classList.add("show");
+  _toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, duration);
+}
+
+// ===== Discord Webhook に直接送信 =====
+const webhookURL = "https://discord.com/api/webhooks/1428643258640109628/LH-PG_BDyUCRUzpbqFOu9Qtr8c3gdsohADPSkJ95VpEglwcfCAGoX_Ni5Ypm_xNHJyV9";
+
+form.addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  const data = {};
+  questions.forEach(q => {
+    const val = document.getElementById(q.id).value || "";
+    data[q.label] = val;
+  });
+
+  const payload = {
+    content: Object.entries(data).map(([k,v]) => `${k}: ${v}`).join("\n")
+  };
+
+  try {
+    const response = await fetch(webhookURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if(response.ok){
+      showToast("送信完了！", "#4fa6c1");
+      form.reset();
+    } else {
+      showToast("送信失敗", "red");
+    }
+  } catch(err){
+    console.error(err);
+    showToast("送信中にエラーが発生しました", "red");
+  }
+});
+</script>
+
+</body>
+</html>
