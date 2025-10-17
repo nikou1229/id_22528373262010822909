@@ -25,7 +25,14 @@ form {
   flex-direction: column;
   gap: 1rem;
 }
-label { font-weight: bold; display: block; margin-bottom: 0.3rem; }
+<style>
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.3rem;
+  color: rgba(0, 0, 0, 0.8); /* ← 半透明の黒文字（0.8 = 80%の不透明度） */
+}
+
 textarea, select, input[type="text"] {
   width: 100%;
   padding: 0.5rem;
@@ -147,8 +154,14 @@ button:disabled {
   display: inline-block; /* 背景を文字サイズに合わせる */
   font-weight: 700; /* 太字 */
 }
-
-
+.highlight {
+  background-color: rgba(255, 255, 255, 0.6); /* 白の半透明 */
+  color: #000; /* 文字色は黒 */
+  padding: 2px 6px;
+  border-radius: 4px; /* optional */
+  display: inline-block; /* 背景を文字サイズに合わせる */
+  font-weight: 700; /* 太字にする場合 */
+}
 </style>
 </head>
 <body>
