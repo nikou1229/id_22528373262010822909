@@ -282,6 +282,7 @@ questions.forEach(q => {
     // 🔹「その他」入力欄を作成（最初は非表示）
     const otherInput = document.createElement("input");
     otherInput.type = "text";
+    otherInput.id = q.id + "_other";
     otherInput.placeholder = "具体的に入力してください";
     otherInput.style.display = "none";
     otherInput.classList.add("other-input");
