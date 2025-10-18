@@ -264,7 +264,6 @@ questions.forEach(q => {
   label.htmlFor = q.id;
   wrapper.appendChild(label);
 
-  // 🔹画像が指定されていれば追加
   if (q.img) {
     const img = document.createElement("img");
     img.src = q.img;
@@ -274,41 +273,42 @@ questions.forEach(q => {
   }
 
   let input;
-if (q.type === "select") {
-  input = document.createElement("select");
-  q.options.forEach(opt => {
-    const o = document.createElement("option");
-    o.value = opt;
-    o.textContent = opt;
-    input.appendChild(o);
-  });
+  if (q.type === "select") {
+    input = document.createElement("select");
+    q.options.forEach(opt => {
+      const o = document.createElement("option");
+      o.value = opt;
+      o.textContent = opt;
+      input.appendChild(o);
+    });
+    wrapper.appendChild(input);
 
-  wrapper.appendChild(input); // ← selectを先に追加！
+    const otherInput = document.createElement("input");
+    otherInput.type = "text";
+    otherInput.id = q.id + "_other";
+    otherInput.placeholder = "具体的に入力してください";
+    otherInput.style.display = "none";
+    otherInput.classList.add("other-input");
+    wrapper.appendChild(otherInput);
 
-  // 🔹「その他」入力欄を作成（最初は非表示）
-  const otherInput = document.createElement("input");
-  otherInput.type = "text";
-  otherInput.id = q.id + "_other";
-  otherInput.placeholder = "具体的に入力してください";
-  otherInput.style.display = "none";
-  otherInput.classList.add("other-input");
-  wrapper.appendChild(otherInput); // ← selectの下に配置！
+    input.addEventListener("change", () => {
+      if (input.value === "その他") {
+        otherInput.style.display = "block";
+      } else {
+        otherInput.style.display = "none";
+        otherInput.value = "";
+      }
+    });
+  } else {
+    input = document.createElement("textarea");
+    input.rows = 3;
+    input.placeholder = "回答を入力してください";
+    wrapper.appendChild(input);
+  }
 
-  // 🔹「その他」が選ばれたときだけ表示
-  input.addEventListener("change", () => {
-    if (input.value === "その他") {
-      otherInput.style.display = "block";
-    } else {
-      otherInput.style.display = "none";
-      otherInput.value = "";
-    }
-  });
-} else {
-  input = document.createElement("textarea");
-  input.rows = 3;
-  input.placeholder = "回答を入力してください";
-  wrapper.appendChild(input);
-}
+  // ← これが抜けていた！
+  form.appendChild(wrapper);
+});
 
 });
 
