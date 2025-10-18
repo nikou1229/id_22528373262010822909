@@ -186,6 +186,15 @@ button:disabled {
   margin-top: 0.5rem;      /* ボタンとの余白 */
   font-family: 'Arial', sans-serif;
 }
+.question-image {
+  display: block;
+  max-width: 100%;
+  width: 300px;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
 </style>
 </head>
 <body>
@@ -217,11 +226,15 @@ button:disabled {
 const questions = [
   { id: "name", label: "あなたのお名前", type: "text" },
   { id: "age", label: "年齢", type: "select", options: ["10歳未満","10代", "20代", "30代", "40代", "50代", "60代以上"] },
-  { id: "gender", label: "性別", type: "select", options: ["男性","女性", "その他の性別", "答えたくない"] },
+  { id: "gender", label: "性別", type: "select", options: ["男性","女性", "その他", "答えたくない"] },
   { id: "q1", label: "青色についてのイメージを教えてください", type: "text" },
-  { id: "q2", label: "赤色についてのイメージを教えてください", type: "text"] },
-  { id: "q3", label: "その広告をクリックしましたか？", type: "select", options: ["はい", "いいえ"] },
-  { id: "q4", label: "被害や感想があれば自由に書いてください", type: "text" }
+  { id: "q2", label: "赤色についてのイメージを教えてください", type: "text" },
+  { id: "q3", label: "黄色についてのイメージを教えてください", type: "text" },
+  { id: "q4", label: "緑色についてのイメージを教えてください", type: "text" },
+  { id: "q5", label: "この色をどう思いますか？", type: "text", img:"005.jpg" },
+  { id: "q6", label: "被害や感想があれば自由に書いてください", type: "text" },
+  { id: "q7", label: "被害や感想があれば自由に書いてください", type: "text" },
+  { id: "q8", label: "被害や感想があれば自由に書いてください", type: "text" },
 ];
 
 // ===== フォーム生成 =====
@@ -230,10 +243,20 @@ const submitButton = form.querySelector("button");
 form.innerHTML = "";
 questions.forEach(q => {
   const wrapper = document.createElement("div");
+
   const label = document.createElement("label");
   label.textContent = q.label;
   label.htmlFor = q.id;
   wrapper.appendChild(label);
+
+  // 🔹画像を追加
+  if (q.img) {
+    const img = document.createElement("img");
+    img.src = q.img;
+    img.alt = q.label;
+    img.classList.add("question-image");
+    wrapper.appendChild(img);
+  }
 
   let input;
   if (q.type === "select") {
@@ -244,36 +267,17 @@ questions.forEach(q => {
       o.textContent = opt;
       input.appendChild(o);
     });
-    // 🔹「その他」入力欄を追加（最初は非表示）
-    const otherInput = document.createElement("input");
-    otherInput.type = "text";
-    otherInput.placeholder = "その他を入力";
-    otherInput.style.display = "none";
-    otherInput.id = q.id + "_other";
-
-    // 🔹「その他」を選んだときだけ表示
-    input.addEventListener("change", () => {
-      if (input.value === "その他") {
-        otherInput.style.display = "block";
-      } else {
-        otherInput.style.display = "none";
-        otherInput.value = "";
-      }
-    });
-
-    wrapper.appendChild(input);
-    wrapper.appendChild(otherInput);
   } else {
     input = document.createElement("textarea");
     input.rows = 3;
     input.placeholder = "回答を入力してください";
-    input.id = q.id;
-    wrapper.appendChild(input);
   }
-
+  input.id = q.id;
+  wrapper.appendChild(input);
   form.appendChild(wrapper);
 });
 form.appendChild(submitButton);
+
 
 // ===== トースト =====
 const toast = document.getElementById("toast");
