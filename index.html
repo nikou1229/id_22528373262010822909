@@ -190,7 +190,8 @@ button:disabled {
 </head>
 <body>
 
-<h2>詐欺に関するフォーム</h2>
+<h2>色彩感覚に関するアンケート</h2>
+<h3>友人や家族にもぜひ回してください</h3>
 
 <div id="toast"></div>
 
@@ -215,10 +216,10 @@ button:disabled {
 // ===== 質問リスト =====
 const questions = [
   { id: "name", label: "あなたのお名前", type: "text" },
-  { id: "email", label: "メールアドレス", type: "text" },
-  { id: "age", label: "年齢", type: "select", options: ["10代", "20代", "30代", "40代", "50代", "60代以上"] },
-  { id: "q1", label: "最近見た詐欺広告について教えてください", type: "text" },
-  { id: "q2", label: "どこでその広告を見ましたか？", type: "select", options: ["SNS", "検索サイト", "メール", "動画サイト", "その他"] },
+  { id: "age", label: "年齢", type: "select", options: ["10歳未満","10代", "20代", "30代", "40代", "50代", "60代以上"] },
+  { id: "gender", label: "性別", type: "select", options: ["男性","女性", "その他の性別", "答えたくない"] },
+  { id: "q1", label: "青色についてのイメージを教えてください", type: "text" },
+  { id: "q2", label: "赤色についてのイメージを教えてください", type: "text"] },
   { id: "q3", label: "その広告をクリックしましたか？", type: "select", options: ["はい", "いいえ"] },
   { id: "q4", label: "被害や感想があれば自由に書いてください", type: "text" }
 ];
@@ -243,13 +244,33 @@ questions.forEach(q => {
       o.textContent = opt;
       input.appendChild(o);
     });
+    // 🔹「その他」入力欄を追加（最初は非表示）
+    const otherInput = document.createElement("input");
+    otherInput.type = "text";
+    otherInput.placeholder = "その他を入力";
+    otherInput.style.display = "none";
+    otherInput.id = q.id + "_other";
+
+    // 🔹「その他」を選んだときだけ表示
+    input.addEventListener("change", () => {
+      if (input.value === "その他") {
+        otherInput.style.display = "block";
+      } else {
+        otherInput.style.display = "none";
+        otherInput.value = "";
+      }
+    });
+
+    wrapper.appendChild(input);
+    wrapper.appendChild(otherInput);
   } else {
     input = document.createElement("textarea");
     input.rows = 3;
     input.placeholder = "回答を入力してください";
+    input.id = q.id;
+    wrapper.appendChild(input);
   }
-  input.id = q.id;
-  wrapper.appendChild(input);
+
   form.appendChild(wrapper);
 });
 form.appendChild(submitButton);
@@ -274,10 +295,12 @@ form.addEventListener('submit', async function(e){
   e.preventDefault();
 
   const data = {};
-  questions.forEach(q => {
-    const val = document.getElementById(q.id).value || "";
-    data[q.label] = val;
-  });
+questions.forEach(q => {
+  const val = document.getElementById(q.id)?.value || "";
+  const otherVal = document.getElementById(q.id + "_other")?.value || "";
+  data[q.label] = otherVal || val; // 🔹その他があればそっちを優先
+});
+
 
   const payload = {
     content: Object.entries(data).map(([k,v]) => `${k}: ${v}`).join("\n")
