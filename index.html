@@ -225,31 +225,30 @@ button:disabled {
 // ===== 質問リスト =====
 const questions = [
   { id: "name", label: "あなたのお名前", type: "text" },
-  { id: "age", label: "年齢", type: "select", options: ["10歳未満","10代", "20代", "30代", "40代", "50代", "60代以上"] },
+  { id: "age", label: "年齢", type: "select", options: ["10歳未満","10代", "20代", "30代", "40代", "50代", "60代以上", "その他"] },
   { id: "gender", label: "性別", type: "select", options: ["男性","女性", "その他", "答えたくない"] },
   { id: "q1", label: "青色についてのイメージを教えてください", type: "text" },
   { id: "q2", label: "赤色についてのイメージを教えてください", type: "text" },
   { id: "q3", label: "黄色についてのイメージを教えてください", type: "text" },
   { id: "q4", label: "緑色についてのイメージを教えてください", type: "text" },
-  { id: "q5", label: "この色をどう思いますか？", type: "text", img:"005.jpg" },
-  { id: "q6", label: "被害や感想があれば自由に書いてください", type: "text" },
-  { id: "q7", label: "被害や感想があれば自由に書いてください", type: "text" },
-  { id: "q8", label: "被害や感想があれば自由に書いてください", type: "text" },
+  { id: "q5", label: "この色をどう思いますか？", type: "text", img: "005.jpg" },
+  { id: "q6", label: "自由に意見を書いてください", type: "text" }
 ];
 
 // ===== フォーム生成 =====
 const form = document.getElementById("questionForm");
-const submitButton = form.querySelector("button");
 form.innerHTML = "";
+
 questions.forEach(q => {
   const wrapper = document.createElement("div");
+  wrapper.classList.add("question-block");
 
   const label = document.createElement("label");
   label.textContent = q.label;
   label.htmlFor = q.id;
   wrapper.appendChild(label);
 
-  // 🔹画像を追加
+  // 🔹画像が指定されていれば追加
   if (q.img) {
     const img = document.createElement("img");
     img.src = q.img;
@@ -267,15 +266,39 @@ questions.forEach(q => {
       o.textContent = opt;
       input.appendChild(o);
     });
+
+    // 🔹「その他」入力欄を作成（最初は非表示）
+    const otherInput = document.createElement("input");
+    otherInput.type = "text";
+    otherInput.placeholder = "具体的に入力してください";
+    otherInput.style.display = "none";
+    otherInput.classList.add("other-input");
+    wrapper.appendChild(otherInput);
+
+    // 🔹「その他」が選ばれたときだけ表示
+    input.addEventListener("change", () => {
+      if (input.value === "その他") {
+        otherInput.style.display = "block";
+      } else {
+        otherInput.style.display = "none";
+        otherInput.value = "";
+      }
+    });
   } else {
     input = document.createElement("textarea");
     input.rows = 3;
     input.placeholder = "回答を入力してください";
   }
+
   input.id = q.id;
   wrapper.appendChild(input);
   form.appendChild(wrapper);
 });
+
+// ===== 投稿ボタン =====
+const submitButton = document.createElement("button");
+submitButton.type = "submit";
+submitButton.textContent = "投稿する";
 form.appendChild(submitButton);
 
 
